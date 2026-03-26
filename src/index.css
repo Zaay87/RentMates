@@ -318,14 +318,3 @@ td {
 
 }
 
-.button-paid {
-    background-color: #c62828 !important;
-    color: white !important;
-    border: none;
-}
-
-.button-unpaid {
-    background-color: #2e7d32 !important;
-    color: white !important;
-    border: none;
-}
