@@ -184,8 +184,9 @@ function AddBillPage({ roommates, onAddBill }) {
             const baseShare = Math.floor(totalCents / roommates.length);
             const remainder = totalCents % roommates.length;
 
-            roommateData = roommates.map((roommate, index) => {
-                const owedCents = baseShare + (index < remainder ? 1 : 0);
+            roommateData = roommates.map((roommate) => {
+                const extraCent = roommate === primaryPayer ? remainder : 0;
+                const owedCents = baseShare + extraCent;
                 const owed = owedCents / 100;
 
                 return {
@@ -383,9 +384,6 @@ function BillDetailsPage({ bill, onTogglePaid, onSendReminder, reminders }) {
                         <h2>{bill.name}</h2>
                         <p className="muted">
                             Due {formatDueDate(bill.due)} • {bill.split} • Primary payer: {bill.primaryPayer} • Status: {status}
-                        </p>
-                        <p className="muted">
-                            Due {formatDueDate(bill.due)} • {bill.split} • Status: {status}
                         </p>
                     </div>
 
@@ -663,11 +661,6 @@ function BillsOverviewPage({ bills, onOpenBill }) {
                       {status}
                     </span>
                                     </div>
-
-                                    <p className="muted">
-                                        Due {formatDueDate(bill.due)} • {bill.split} • Total{" "}
-                                        {currency(bill.total)}
-                                    </p>
                                     <p className="muted">
                                         Due {formatDueDate(bill.due)} • {bill.split} • Primary payer: {bill.primaryPayer} • Total {currency(bill.total)}
                                     </p>
