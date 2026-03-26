@@ -245,7 +245,7 @@ function AddBillPage({ roommates, onAddBill }) {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="input"
-                            placeholder="Electric Bill"
+                            placeholder="Ex. Electric Bill"
                         />
                     </div>
 
@@ -257,7 +257,7 @@ function AddBillPage({ roommates, onAddBill }) {
                             value={total}
                             onChange={(e) => setTotal(e.target.value)}
                             className="input"
-                            placeholder="120.00"
+                            placeholder="Ex. 120.00"
                         />
                     </div>
 
