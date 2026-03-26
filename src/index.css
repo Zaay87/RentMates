@@ -315,12 +315,14 @@ td {
         min-width: 0;
     }
     .button-paid {
-        background-color: #2e7d32;   /* green when paid*/
-        color: white;
+        background-color: #2e7d32 !important;
+        color: white !important;
+        border: none;
     }
 
     .button-unpaid {
-        background-color: #c62828;   /* red when unpaid*/
-        color: white;
+        background-color: #c62828 !important;
+        color: white !important;
+        border: none;
     }
 }
