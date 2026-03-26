@@ -314,15 +314,17 @@ td {
     .summary-grid {
         min-width: 0;
     }
-    .button-paid {
-        background-color: #2e7d32 !important;
-        color: white !important;
-        border: none;
-    }
 
-    .button-unpaid {
-        background-color: #c62828 !important;
-        color: white !important;
-        border: none;
-    }
+}
+
+.button-paid {
+    background-color: #2e7d32 !important;
+    color: white !important;
+    border: none;
+}
+
+.button-unpaid {
+    background-color: #c62828 !important;
+    color: white !important;
+    border: none;
 }
