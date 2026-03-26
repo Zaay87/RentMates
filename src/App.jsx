@@ -373,7 +373,13 @@ function BillDetailsPage({ bill, onTogglePaid, onSendReminder, reminders }) {
                             <tr key={roommate.name}>
                                 <td>{roommate.name}</td>
                                 <td>{currency(roommate.owed)}</td>
-                                <td>{roommate.paid ? "Paid" : "Unpaid"}</td>
+                                <td
+                                    className={
+                                        roommate.paid ? "status-paid" : "status-unpaid"
+                                    }
+                                >
+                                    {roommate.paid ? "Paid" : "Unpaid"}
+                                </td>
                                 <td>
                                     <div className="action-row">
                                         <button

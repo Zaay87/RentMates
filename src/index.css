@@ -261,6 +261,21 @@ p {
     font-weight: 700;
 }
 
+.status-paid {
+    color: #2e7d32;     /* green */
+    font-weight: 700;
+}
+
+.status-unpaid {
+    color: #c62828;     /* red */
+    font-weight: 700;
+}
+
+.status-partial {
+    color: #ef7f3b;     /* orange */
+    font-weight: 700;
+}
+
 .align-right {
     display: flex;
     justify-content: flex-end;
