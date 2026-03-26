@@ -146,6 +146,7 @@ function HouseholdPage({
 }
 
 function AddBillPage({ roommates, onAddBill }) {
+    const [primaryPayer, setPrimaryPayer] = useState("");
     const [name, setName] = useState("");
     const [total, setTotal] = useState("");
     const [due, setDue] = useState("");
@@ -171,7 +172,7 @@ function AddBillPage({ roommates, onAddBill }) {
             return;
         }
 
-        if (!name.trim() || !amount || amount <= 0 || !due) {
+        if (!name.trim() || !amount || amount <= 0 || !due || !primaryPayer) {
             setError("Please complete all bill fields before saving.");
             return;
         }
@@ -179,12 +180,20 @@ function AddBillPage({ roommates, onAddBill }) {
         let roommateData = [];
 
         if (splitType === "equal") {
-            const share = amount / roommates.length;
-            roommateData = roommates.map((roommate) => ({
-                name: roommate,
-                owed: Number(share.toFixed(2)),
-                paid: false,
-            }));
+            const totalCents = Math.round(amount * 100);
+            const baseShare = Math.floor(totalCents / roommates.length);
+            const remainder = totalCents % roommates.length;
+
+            roommateData = roommates.map((roommate, index) => {
+                const owedCents = baseShare + (index < remainder ? 1 : 0);
+                const owed = owedCents / 100;
+
+                return {
+                    name: roommate,
+                    owed,
+                    paid: owed <= 0,
+                };
+            });
         } else {
             const percentages = roommates.map((roommate) =>
                 Number(customShares[roommate] || 0)
@@ -196,10 +205,23 @@ function AddBillPage({ roommates, onAddBill }) {
                 return;
             }
 
-            roommateData = roommates.map((roommate) => {
-                const owed = Number(
-                    ((amount * Number(customShares[roommate])) / 100).toFixed(2)
-                );
+            const totalCents = Math.round(amount * 100);
+
+            let assignedCents = 0;
+
+            roommateData = roommates.map((roommate, index) => {
+                let owedCents;
+
+                if (index === roommates.length - 1) {
+                    owedCents = totalCents - assignedCents;
+                } else {
+                    owedCents = Math.round(
+                        (totalCents * Number(customShares[roommate])) / 100
+                    );
+                    assignedCents += owedCents;
+                }
+
+                const owed = owedCents / 100;
 
                 return {
                     name: roommate,
@@ -214,10 +236,12 @@ function AddBillPage({ roommates, onAddBill }) {
             total: amount,
             due,
             split: splitType === "equal" ? "Equal split" : "Custom split",
+            primaryPayer,
             roommates: roommateData,
         });
 
         setName("");
+        setPrimaryPayer("");
         setTotal("");
         setDue("");
         setSplitType("equal");
@@ -238,6 +262,22 @@ function AddBillPage({ roommates, onAddBill }) {
                     Create a bill, choose how it will be split, and track payments from
                     one place.
                 </p>
+            </div>
+
+            <div>
+                <label className="label">Primary Payer</label>
+                <select
+                    value={primaryPayer}
+                    onChange={(e) => setPrimaryPayer(e.target.value)}
+                    className="input"
+                >
+                    <option value="">Select primary payer</option>
+                    {roommates.map((roommate) => (
+                        <option key={roommate} value={roommate}>
+                            {roommate}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div className="card">
@@ -341,6 +381,9 @@ function BillDetailsPage({ bill, onTogglePaid, onSendReminder, reminders }) {
                 <div className="split-header">
                     <div>
                         <h2>{bill.name}</h2>
+                        <p className="muted">
+                            Due {formatDueDate(bill.due)} • {bill.split} • Primary payer: {bill.primaryPayer} • Status: {status}
+                        </p>
                         <p className="muted">
                             Due {formatDueDate(bill.due)} • {bill.split} • Status: {status}
                         </p>
@@ -541,7 +584,7 @@ function DashboardPage({
                                     </div>
 
                                     <p className="muted">
-                                        Due {formatDueDate(bill.due)} • {bill.split} • {paidCount} of{" "}
+                                        Due {formatDueDate(bill.due)} • {bill.split} • Primary payer: {bill.primaryPayer} • {paidCount} of{" "}
                                         {bill.roommates.length} paid
                                     </p>
                                 </div>
@@ -624,6 +667,9 @@ function BillsOverviewPage({ bills, onOpenBill }) {
                                     <p className="muted">
                                         Due {formatDueDate(bill.due)} • {bill.split} • Total{" "}
                                         {currency(bill.total)}
+                                    </p>
+                                    <p className="muted">
+                                        Due {formatDueDate(bill.due)} • {bill.split} • Primary payer: {bill.primaryPayer} • Total {currency(bill.total)}
                                     </p>
                                 </div>
 
