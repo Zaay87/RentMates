@@ -572,33 +572,10 @@ export default function App() {
     const [selectedBillId, setSelectedBillId] = useState(1);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
-    const [roommates, setRoommates] = useState(["Jordan", "Maya", "Chris"]);
+    const [roommates, setRoommates] = useState(["Jessica", "Zac", "Avery","Yaniel", "Adam", "Nhan"]);
     const [reminders, setReminders] = useState([]);
     const [bills, setBills] = useState([
-        {
-            id: 1,
-            name: "Electric Bill",
-            due: "2026-03-28",
-            total: 156.42,
-            split: "Equal split",
-            roommates: [
-                { name: "Jordan", owed: 52.14, paid: true },
-                { name: "Maya", owed: 52.14, paid: true },
-                { name: "Chris", owed: 52.14, paid: false },
-            ],
-        },
-        {
-            id: 2,
-            name: "Internet",
-            due: "2026-04-02",
-            total: 75.0,
-            split: "Equal split",
-            roommates: [
-                { name: "Jordan", owed: 25.0, paid: false },
-                { name: "Maya", owed: 25.0, paid: false },
-                { name: "Chris", owed: 25.0, paid: false },
-            ],
-        },
+
     ]);
 
     const selectedBill = bills.find((bill) => bill.id === selectedBillId);
@@ -695,7 +672,7 @@ export default function App() {
                     </div>
 
                     <p className="muted topbar-copy">
-                        A functional prototype for creating bills, splitting costs, and
+                        Group 16's prototype for creating bills, splitting costs, and
                         tracking who has paid.
                     </p>
                 </div>

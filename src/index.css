@@ -58,7 +58,7 @@ p {
 }
 
 .brand-logo {
-    height: 52px;
+    height: 80px;
     width: auto;
 }
 
@@ -313,5 +313,14 @@ td {
 
     .summary-grid {
         min-width: 0;
+    }
+    .button-paid {
+        background-color: #2e7d32;   /* green when paid*/
+        color: white;
+    }
+
+    .button-unpaid {
+        background-color: #c62828;   /* red when unpaid*/
+        color: white;
     }
 }
