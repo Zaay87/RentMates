@@ -586,6 +586,104 @@ function DashboardPage({
     );
 }
 
+function BillsOverviewPage({ bills, onOpenBill }) {
+    return (
+        <div className="page-stack">
+            <div className="card">
+                <h2>All Bill Details</h2>
+                <p className="muted">
+                    View every bill in one place, including total amount, due date, split
+                    type, and each roommate's payment status.
+                </p>
+            </div>
+
+            <div className="stack">
+                {bills.map((bill) => {
+                    const status = getBillStatus(bill.roommates);
+                    const remaining = getRemaining(bill.roommates);
+
+                    return (
+                        <div key={bill.id} className="card">
+                            <div className="split-header">
+                                <div>
+                                    <div className="title-row">
+                                        <h3>{bill.name}</h3>
+                                        <span
+                                            className={`status-pill ${
+                                                status === "Paid"
+                                                    ? "status-paid"
+                                                    : status === "Unpaid"
+                                                        ? "status-unpaid"
+                                                        : "status-partial"
+                                            }`}
+                                        >
+                      {status}
+                    </span>
+                                    </div>
+
+                                    <p className="muted">
+                                        Due {formatDueDate(bill.due)} • {bill.split} • Total{" "}
+                                        {currency(bill.total)}
+                                    </p>
+                                </div>
+
+                                <div className="summary-box">
+                                    <p>
+                                        Remaining: <strong>{currency(remaining)}</strong>
+                                    </p>
+                                    <p>
+                                        Roommates: <strong>{bill.roommates.length}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="table-wrap">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Roommate</th>
+                                        <th>Amount Owed</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {bill.roommates.map((roommate) => (
+                                        <tr key={roommate.name}>
+                                            <td>{roommate.name}</td>
+                                            <td>{currency(roommate.owed)}</td>
+                                            <td
+                                                className={
+                                                    roommate.paid ? "status-paid" : "status-unpaid"
+                                                }
+                                            >
+                                                {roommate.paid ? "Paid" : "Unpaid"}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="align-right">
+                                <button
+                                    className="button button-secondary"
+                                    onClick={() => onOpenBill(bill.id)}
+                                >
+                                    Open Interactive Bill Page
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
+
+                {bills.length === 0 && (
+                    <div className="card muted">No bills have been created yet.</div>
+                )}
+            </div>
+        </div>
+    );
+}
+
 export default function App() {
     const [page, setPage] = useState("dashboard");
     const [selectedBillId, setSelectedBillId] = useState(1);
@@ -722,12 +820,12 @@ export default function App() {
                         Household Setup
                     </button>
                     <button
-                        onClick={() => setPage("details")}
+                        onClick={() => setPage("bills-overview")}
                         className={`button ${
-                            page === "details" ? "button-primary" : "button-secondary"
+                            page === "bills-overview" ? "button-primary" : "button-secondary"
                         }`}
                     >
-                        Bill Details
+                        All Bill Details
                     </button>
                 </nav>
             </header>
@@ -757,6 +855,10 @@ export default function App() {
                         onDeleteRoommate={handleDeleteRoommate}
                         bills={bills}
                     />
+                )}
+
+                {page === "bills-overview" && (
+                    <BillsOverviewPage bills={bills} onOpenBill={handleOpenBill} />
                 )}
 
                 {page === "details" && (
