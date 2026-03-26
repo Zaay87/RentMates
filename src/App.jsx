@@ -556,9 +556,9 @@ function DashboardPage({
                                         <p className="strong">{currency(remaining)}</p>
                                     </div>
                                     <div>
-                                        <p className="muted small">Next Step</p>
+                                        <p className="muted small">Status</p>
                                         <p className="strong">
-                                            {remaining > 0 ? "Follow up needed" : "Complete"}
+                                            {remaining > 0 ? "Balance Remaining" : "Complete"}
                                         </p>
                                     </div>
                                 </div>
