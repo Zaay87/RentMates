@@ -197,13 +197,17 @@ function AddBillPage({ roommates, onAddBill }) {
                 return;
             }
 
-            roommateData = roommates.map((roommate) => ({
-                name: roommate,
-                owed: Number(
+            roommateData = roommates.map((roommate) => {
+                const owed = Number(
                     ((amount * Number(customShares[roommate])) / 100).toFixed(2)
-                ),
-                paid: false,
-            }));
+                );
+
+                return {
+                    name: roommate,
+                    owed,
+                    paid: owed <= 0,
+                };
+            });
         }
 
         onAddBill({
@@ -524,7 +528,17 @@ function DashboardPage({
                                 <div>
                                     <div className="title-row">
                                         <h3>{bill.name}</h3>
-                                        <span className="status-pill">{status}</span>
+                                        <span
+                                            className={`status-pill ${
+                                                status === "Paid"
+                                                ? "status-paid" 
+                                                    : status === "Unpaid"
+                                                ? "status-unpaid"
+                                                    :"status-partial"
+                                            }`}
+                                        >
+                                            {status}
+                                        </span>
                                     </div>
 
                                     <p className="muted">
