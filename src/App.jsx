@@ -91,8 +91,7 @@ function HouseholdPage({
                 <div className="card">
                     <h3>Current Roommates</h3>
                     <div className="helper-box">
-                        Paid bill history can stay in the system. Deletion is only blocked
-                        by unpaid balances.
+                        User deletion is blocked by unpaid balances. Pay your balances to be removed.
                     </div>
 
                     <div className="stack">
