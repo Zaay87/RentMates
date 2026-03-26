@@ -377,10 +377,10 @@ function BillDetailsPage({ bill, onTogglePaid, onSendReminder, reminders }) {
                                 <td>
                                     <div className="action-row">
                                         <button
-                                            className="button button-primary small-button"
-                                            onClick={() =>
-                                                onTogglePaid(bill.id, roommate.name)
-                                            }
+                                            className={`button small-button ${
+                                                roommate.paid ? "button-paid" : "button-unpaid"
+                                            }`}
+                                            onClick={() => onTogglePaid(bill.id, roommate.name)}
                                         >
                                             {roommate.paid ? "Mark Unpaid" : "Mark Paid"}
                                         </button>
