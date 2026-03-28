@@ -948,6 +948,9 @@ export default function App() {
           </div>
 
           <nav className="nav-row">
+
+              <span className="muted strong">Logged in: {loggedInUser}</span>
+
             <button
               onClick={() => setPage('dashboard')}
               className={`button ${
@@ -982,8 +985,6 @@ export default function App() {
             >
               All Bill Details
             </button>
-
-            <span className="muted strong">Logged in: {loggedInUser}</span>
 
             <button onClick={handleSignOut} className="button button-secondary">
               Sign Out
