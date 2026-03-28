@@ -811,6 +811,7 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [email, setEmail] = useState("");
     const [household, setHousehold] = useState("");
+    const [loggedInUser, setLoggedInUser] = useState(null);
     const [page, setPage] = useState("dashboard");
     const [selectedBillId, setSelectedBillId] = useState(1);
     const [search, setSearch] = useState("");
@@ -898,9 +899,14 @@ export default function App() {
             ...prev,
         ]);
     }
+
     function handleEnterDashboard() {
-        setIsLoggedIn(true);
-        setPage("dashboard");
+        const raw = email.split('@')[0];
+        const nameFromEmail = raw.charAt(0).toUpperCase() + raw.slice(1);
+
+      setLoggedInUser(nameFromEmail);
+      setIsLoggedIn(true);
+      setPage('dashboard');
     }
 
     function handleSignOut() {
@@ -977,10 +983,11 @@ export default function App() {
               All Bill Details
             </button>
 
+            <span className="muted strong">Logged in: {loggedInUser}</span>
+
             <button onClick={handleSignOut} className="button button-secondary">
               Sign Out
             </button>
-
           </nav>
         </header>
 
