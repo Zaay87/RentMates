@@ -722,8 +722,95 @@ function BillsOverviewPage({ bills, onOpenBill }) {
         </div>
     );
 }
+function LoginPage({
+  email,
+  setEmail,
+  household,
+  setHousehold,
+  onEnter,
+}) {
+    return (
+      <div className="app-shell">
+          <main className="main-content">
+              <div className="page-stack">
+                  <div className="two-column">
+                      <div className="card">
+                          <div className="brand-row">
+                              <img
+                                src="/rentmates-logo.png"
+                                alt="RentMates logo"
+                                className="brand-logo"
+                              />
+                              <div>
+                                  <h2 className="brand-title">Welcome to RentMates</h2>
+                                  <p className="muted">
+                                      A simple shared-bills workspace for roommates.
+                                  </p>
+                              </div>
+                          </div>
 
+                          <div className="stack" style={{ marginTop: "24px" }}>
+                              <div className="helper-box">
+                                  Track shared bills in one place.
+                              </div>
+                              <div className="helper-box">
+                                  See who still owes money and who has already paid.
+                              </div>
+                              <div className="helper-box">
+                                  Reduce awkward follow-up messages with clearer visibility.
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="card">
+                          <h2>Sign in</h2>
+                          <p className="muted" style={{ marginTop: "8px" }}>
+                              This is a prototype login screen for entering the shared household dashboard.
+                          </p>
+
+                          <div className="stack" style={{ marginTop: "24px" }}>
+                              <div>
+                                  <label className="label">Email</label>
+                                  <input
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="input"
+                                    placeholder="name@example.com"
+                                  />
+                              </div>
+
+                              <div>
+                                  <label className="label">Household code</label>
+                                  <input
+                                    value={household}
+                                    onChange={(e) => setHousehold(e.target.value)}
+                                    className="input"
+                                    placeholder="RM-204"
+                                  />
+                              </div>
+
+                              <button
+                                onClick={onEnter}
+                                className="button button-primary"
+                              >
+                                  Enter Dashboard
+                              </button>
+
+                              <p className="small muted">
+                                  No real authentication is used here.
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </main>
+      </div>
+    )
+}
 export default function App() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [email, setEmail] = useState("");
+    const [household, setHousehold] = useState("");
     const [page, setPage] = useState("dashboard");
     const [selectedBillId, setSelectedBillId] = useState(1);
     const [search, setSearch] = useState("");
@@ -811,104 +898,132 @@ export default function App() {
             ...prev,
         ]);
     }
+    function handleEnterDashboard() {
+        setIsLoggedIn(true);
+        setPage("dashboard");
+    }
+
+    function handleSignOut() {
+        setIsLoggedIn(false);
+        setPage("dashboard");
+    }
+
+    if (!isLoggedIn) {
+        return (
+          <LoginPage
+              email={email}
+              setEmail={setEmail}
+              household={household}
+              setHousehold={setHousehold}
+              onEnter={handleEnterDashboard}
+              />
+        );
+    }
 
     return (
-        <div className="app-shell">
-            <header className="topbar">
-                <div>
-                    <div className="brand-row">
-                        <img
-                            src="/rentmates-logo.png"
-                            alt="RentMates logo"
-                            className="brand-logo"
-                        />
-                        <div>
-                            <h1 className="brand-title">RentMates</h1>
-                        </div>
-                    </div>
+      <div className="app-shell">
+        <header className="topbar">
+          <div>
+            <div className="brand-row">
+              <img
+                src="/rentmates-logo.png"
+                alt="RentMates logo"
+                className="brand-logo"
+              />
+              <div>
+                <h1 className="brand-title">RentMates</h1>
+              </div>
+            </div>
 
-                    <p className="muted topbar-copy">
-                        Group 16's prototype for creating bills, splitting costs, and
-                        tracking who has paid.
-                    </p>
-                </div>
+            <p className="muted topbar-copy">
+              Group 16's prototype for creating bills, splitting costs, and
+              tracking who has paid.
+            </p>
+          </div>
 
-                <nav className="nav-row">
-                    <button
-                        onClick={() => setPage("dashboard")}
-                        className={`button ${
-                            page === "dashboard" ? "button-primary" : "button-secondary"
-                        }`}
-                    >
-                        Dashboard
-                    </button>
-                    <button
-                        onClick={() => setPage("add-bill")}
-                        className={`button ${
-                            page === "add-bill" ? "button-primary" : "button-secondary"
-                        }`}
-                    >
-                        Add Bill
-                    </button>
-                    <button
-                        onClick={() => setPage("household")}
-                        className={`button ${
-                            page === "household" ? "button-primary" : "button-secondary"
-                        }`}
-                    >
-                        Household Setup
-                    </button>
-                    <button
-                        onClick={() => setPage("bills-overview")}
-                        className={`button ${
-                            page === "bills-overview" ? "button-primary" : "button-secondary"
-                        }`}
-                    >
-                        All Bill Details
-                    </button>
-                </nav>
-            </header>
+          <nav className="nav-row">
+            <button
+              onClick={() => setPage('dashboard')}
+              className={`button ${
+                page === 'dashboard' ? 'button-primary' : 'button-secondary'
+              }`}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setPage('add-bill')}
+              className={`button ${
+                page === 'add-bill' ? 'button-primary' : 'button-secondary'
+              }`}
+            >
+              Add Bill
+            </button>
+            <button
+              onClick={() => setPage('household')}
+              className={`button ${
+                page === 'household' ? 'button-primary' : 'button-secondary'
+              }`}
+            >
+              Household Setup
+            </button>
+            <button
+              onClick={() => setPage('bills-overview')}
+              className={`button ${
+                page === 'bills-overview'
+                  ? 'button-primary'
+                  : 'button-secondary'
+              }`}
+            >
+              All Bill Details
+            </button>
 
-            <main className="main-content">
-                {page === "dashboard" && (
-                    <DashboardPage
-                        bills={bills}
-                        search={search}
-                        setSearch={setSearch}
-                        statusFilter={statusFilter}
-                        setStatusFilter={setStatusFilter}
-                        onOpenBill={handleOpenBill}
-                        roommates={roommates}
-                    />
-                )}
+            <button onClick={handleSignOut} className="button button-secondary">
+              Sign Out
+            </button>
 
-                {page === "add-bill" && (
-                    <AddBillPage roommates={roommates} onAddBill={handleAddBill} />
-                )}
+          </nav>
+        </header>
 
-                {page === "household" && (
-                    <HouseholdPage
-                        householdName="RentMates Household"
-                        roommates={roommates}
-                        onAddRoommate={handleAddRoommate}
-                        onDeleteRoommate={handleDeleteRoommate}
-                        bills={bills}
-                    />
-                )}
+        <main className="main-content">
+          {page === 'dashboard' && (
+            <DashboardPage
+              bills={bills}
+              search={search}
+              setSearch={setSearch}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              onOpenBill={handleOpenBill}
+              roommates={roommates}
+            />
+          )}
 
-                {page === "bills-overview" && (
-                    <BillsOverviewPage bills={bills} onOpenBill={handleOpenBill} />
-                )}
+          {page === 'add-bill' && (
+            <AddBillPage roommates={roommates} onAddBill={handleAddBill} />
+          )}
 
-                {page === "details" && (
-                    <BillDetailsPage
-                        bill={selectedBill}
-                        onTogglePaid={handleTogglePaid}
-                        onSendReminder={handleSendReminder}
-                        reminders={reminders}
-                    />
-                )}
-            </main>
-        </div>
+          {page === 'household' && (
+            <HouseholdPage
+              householdName="RentMates Household"
+              roommates={roommates}
+              onAddRoommate={handleAddRoommate}
+              onDeleteRoommate={handleDeleteRoommate}
+              bills={bills}
+            />
+          )}
+
+          {page === 'bills-overview' && (
+            <BillsOverviewPage bills={bills} onOpenBill={handleOpenBill} />
+          )}
+
+          {page === 'details' && (
+            <BillDetailsPage
+              bill={selectedBill}
+              onTogglePaid={handleTogglePaid}
+              onSendReminder={handleSendReminder}
+              reminders={reminders}
+            />
+          )}
+        </main>
+      </div>
     );
 }
