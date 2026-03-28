@@ -46,6 +46,7 @@ function StatCard({ title, value, subtitle }) {
 
 function HouseholdPage({
                            householdName,
+                           householdId,
                            roommates,
                            onAddRoommate,
                            onDeleteRoommate,
@@ -78,70 +79,75 @@ function HouseholdPage({
     }
 
     return (
-        <div className="page-stack">
-            <div className="card">
-                <h2>Household Setup</h2>
-                <p className="muted">
-                    Manage roommates in {householdName}. A roommate can only be deleted
-                    when they do not have any unpaid balance.
-                </p>
-            </div>
+      <div className="page-stack">
+        <div className="card">
+          <h2>Household Setup</h2>
+          <p className="muted">
+            Manage roommates in {householdName}. A roommate can only be deleted
+            when they do not have any unpaid balance.
+          </p>
 
-            <div className="two-column">
-                <div className="card">
-                    <h3>Current Roommates</h3>
-                    <div className="helper-box">
-                        User deletion is blocked by unpaid balances. Pay your balances to be removed.
-                    </div>
-
-                    <div className="stack">
-                        {roommates.map((roommate) => {
-                            const hasUnpaidBills = bills.some((bill) =>
-                                bill.roommates.some(
-                                    (person) => person.name === roommate && !person.paid
-                                )
-                            );
-
-                            return (
-                                <div key={roommate} className="list-row">
-                                    <span>{roommate}</span>
-                                    <button
-                                        className={`button ${
-                                            hasUnpaidBills ? "button-disabled" : "button-primary"
-                                        }`}
-                                        disabled={hasUnpaidBills}
-                                        onClick={() => onDeleteRoommate(roommate)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className="card">
-                    <h3>Add Roommate</h3>
-                    <form className="stack" onSubmit={handleSubmit}>
-                        <div>
-                            <label className="label">Name</label>
-                            <input
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="input"
-                                placeholder="Enter roommate name"
-                            />
-                        </div>
-
-                        {error && <p className="error-text">{error}</p>}
-
-                        <button className="button button-primary" type="submit">
-                            Save Roommate
-                        </button>
-                    </form>
-                </div>
-            </div>
+          <div className="helper-box" style={{ marginTop: '12px' }}>
+            Household ID: <strong>{householdId || 'Not set'}</strong>
+          </div>
         </div>
+
+        <div className="two-column">
+          <div className="card">
+            <h3>Current Roommates</h3>
+            <div className="helper-box">
+              User deletion is blocked by unpaid balances. Pay your balances to
+              be removed.
+            </div>
+
+            <div className="stack">
+              {roommates.map((roommate) => {
+                const hasUnpaidBills = bills.some((bill) =>
+                  bill.roommates.some(
+                    (person) => person.name === roommate && !person.paid,
+                  ),
+                );
+
+                return (
+                  <div key={roommate} className="list-row">
+                    <span>{roommate}</span>
+                    <button
+                      className={`button ${
+                        hasUnpaidBills ? 'button-disabled' : 'button-primary'
+                      }`}
+                      disabled={hasUnpaidBills}
+                      onClick={() => onDeleteRoommate(roommate)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="card">
+            <h3>Add Roommate</h3>
+            <form className="stack" onSubmit={handleSubmit}>
+              <div>
+                <label className="label">Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input"
+                  placeholder="Enter roommate name"
+                />
+              </div>
+
+              {error && <p className="error-text">{error}</p>}
+
+              <button className="button button-primary" type="submit">
+                Save Roommate
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     );
 }
 
@@ -725,8 +731,8 @@ function BillsOverviewPage({ bills, onOpenBill }) {
 function LoginPage({
   email,
   setEmail,
-  household,
-  setHousehold,
+  householdId,
+  setHouseholdId,
   onEnter,
 }) {
     return (
@@ -782,8 +788,8 @@ function LoginPage({
                               <div>
                                   <label className="label">Household code</label>
                                   <input
-                                    value={household}
-                                    onChange={(e) => setHousehold(e.target.value)}
+                                    value={householdId}
+                                    onChange={(e) => setHouseholdId(e.target.value)}
                                     className="input"
                                     placeholder="RM-204"
                                   />
@@ -810,7 +816,7 @@ function LoginPage({
 export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [email, setEmail] = useState("");
-    const [household, setHousehold] = useState("");
+    const [householdId, setHouseholdId] = useState("");
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [page, setPage] = useState("dashboard");
     const [selectedBillId, setSelectedBillId] = useState(1);
@@ -901,8 +907,12 @@ export default function App() {
     }
 
     function handleEnterDashboard() {
-        const raw = email.split('@')[0];
-        const nameFromEmail = raw.charAt(0).toUpperCase() + raw.slice(1);
+      if (!email.trim() || !householdId.trim()) {
+        return;
+      }
+
+      const raw = email.split('@')[0];
+      const nameFromEmail = raw.charAt(0).toUpperCase() + raw.slice(1);
 
       setLoggedInUser(nameFromEmail);
       setIsLoggedIn(true);
@@ -919,8 +929,8 @@ export default function App() {
           <LoginPage
               email={email}
               setEmail={setEmail}
-              household={household}
-              setHousehold={setHousehold}
+              householdId={householdId}
+              setHouseholdId={setHouseholdId}
               onEnter={handleEnterDashboard}
               />
         );
@@ -948,8 +958,7 @@ export default function App() {
           </div>
 
           <nav className="nav-row">
-
-              <span className="muted strong">Logged in: {loggedInUser}</span>
+            <span className="muted strong">Logged in: {loggedInUser}</span>
 
             <button
               onClick={() => setPage('dashboard')}
@@ -1012,6 +1021,7 @@ export default function App() {
           {page === 'household' && (
             <HouseholdPage
               householdName="RentMates Household"
+              householdId={householdId}
               roommates={roommates}
               onAddRoommate={handleAddRoommate}
               onDeleteRoommate={handleDeleteRoommate}
